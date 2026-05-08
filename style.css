@@ -73,7 +73,6 @@
     }
 
     .toDoHeader .optionsButton {
-        anchor-name: --options-button;
         min-width: 42px;
         min-height: 40px;
         background-color: var(--primary-color);
@@ -232,7 +231,6 @@
 
     /* Task Button */
     .taskButton {
-        anchor-name: --task-button;
         position: sticky;
         align-self: flex-end;
         margin-bottom: 15px;
@@ -331,21 +329,6 @@
     .floating-window select,
     .floating-window input[type=color]{
         cursor: pointer;
-    }
-
-    .floating-window#Task {
-        position: fixed;
-        position-anchor: --task-button;
-        left: calc(anchor(--task-button right) + 60px);
-        top: calc(anchor(--task-button top) - 205px);
-        transform: translateY(-50%);
-    }
-
-    .floating-window#Settings {
-        position: fixed;
-        position-anchor: --options-button;
-        top: calc(anchor(--options-button bottom) + 20px);
-        left: anchor(--options-button left);
     }
 
     /* Przycisk do zamknięcia okna (X) */
