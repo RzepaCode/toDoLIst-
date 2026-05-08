@@ -103,6 +103,15 @@ export class o_ToDoList {
         $wrapperToDoList.appendChild($toDoContent);
         // ==========================
         document.getElementById("app").appendChild($wrapperToDoList);
+
+        o_applicationInfo.$tasks.forEach( (task) => {
+                new o_toDoTask({
+                    topic: task.topic,
+                    description: task.description,
+                    category: task.category,
+                })
+            }
+        )
     }
 
     #m_openSettingsPopup() {
