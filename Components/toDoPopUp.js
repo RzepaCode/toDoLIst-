@@ -21,15 +21,14 @@ export class o_toDoPopUp {
             return o_toDoPopUp.#instances[uniqueName];
         }
 
-        t.#uniqueName = uniqueName;
+        this.#uniqueName = uniqueName;
         // Jeśli podano nazwę, zapisujemy tę instancję w rejestrze
-        t.#uniqueName && (o_toDoPopUp.#instances[t.#uniqueName] = t);
+        this.#uniqueName && (o_toDoPopUp.#instances[this.#uniqueName] = this);
 
         // Tworzenie struktury okna
         const $floatingWindow = new o_toDoSection(
             {
                 className: "floating-window",
-                idName: t.#uniqueName,
                 content: [
                     {
                         type: "o_toDoButton",
@@ -46,6 +45,45 @@ export class o_toDoPopUp {
         );
 
         t.#element = $floatingWindow.element;
+
+        // Logika przesuwania okna
+        const $tagsToIgnore = ['INPUT', 'TEXTAREA', 'BUTTON', 'SELECT'];
+        let $isDragging = false;
+        let $offsetX, $offsetY;
+
+        t.#element.addEventListener('mousedown', ($event) => {
+            if ($tagsToIgnore.includes($event.target.tagName)) return;
+
+            $isDragging = true;
+
+            $offsetX = $event.clientX - t.#element.offsetLeft;
+            $offsetY = $event.clientY - t.#element.offsetTop;
+        });
+
+        const handleMouseMove = ($event) => {
+            if (!$isDragging) return;
+
+            // Obliczanie nowej pozycji
+            let $newX = $event.clientX - $offsetX;
+            let $newY = $event.clientY - $offsetY;
+
+            // Ograniczenie do granic okna
+            const $maxX = window.innerWidth - t.#element.offsetWidth;
+            const $maxY = window.innerHeight - t.#element.offsetHeight;
+
+            $newX = Math.max(0, Math.min($newX, $maxX));
+            $newY = Math.max(0, Math.min($newY, $maxY));
+
+            t.#element.style.left = $newX + 'px';
+            t.#element.style.top = $newY + 'px';
+        };
+
+        const handleMouseUp = () => {
+            $isDragging = false;
+        };
+
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
     }
 
     destroy() {
