@@ -218,6 +218,7 @@ export class o_ToDoList {
                             date: document.getElementById("data").value
                         })
                         this.#m_applyFilters();
+                        console.log()
                     }
                 }
             ]

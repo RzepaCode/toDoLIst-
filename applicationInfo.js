@@ -22,17 +22,17 @@ export class o_applicationInfo{
         {
             topic: "Generalne porządki w kuchni",
             description: "Przejrzeć daty ważności w szafkach, umyć lodówkę i uporządkować przyprawy.",
-            category: o_applicationInfo.$categories[4], // Dom
+            category: o_applicationInfo.$categories[4],
         },
         {
             topic: "Rezerwacja biletów do kina",
             description: "Sprawdzić repertuar na weekend i kupić dwa bilety na seans wieczorny.",
-            category: o_applicationInfo.$categories[5], // Inne
+            category: o_applicationInfo.$categories[5],
         },
         {
             topic: "Planowanie budżetu",
             description: "Podsumować wydatki z zeszłego miesiąca i ustalić limity na jedzenie oraz rozrywkę.",
-            category: o_applicationInfo.$categories[1], // Czas wolny (lub Inne)
-        }
+            category: o_applicationInfo.$categories[1],
+        },
     ]
 }
