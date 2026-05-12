@@ -1,38 +1,46 @@
 export class o_applicationInfo{
-    static $categories = ["", "Czas wolny", "Szkoła", "Praca", "Dom", "Inne"];
-    static $appFonts = ["sans-serif", "serif", "Arial", "Calibri", "Arial", "Comic Sans Ms"];
-    static $choosedFont = null;
-    static $primaryAppColor = window.getComputedStyle(document.body).getPropertyValue("--primary-color");
-    static $tasks = [
-        {
-            topic: "Trening na siłowni",
-            description: "Zrobić pełny trening FBW, a po wszystkim 20 minut cardio na bieżni.",
-            category: o_applicationInfo.$categories[1],
-        },
-        {
-            topic: "Przygotowanie do sprawdzianu",
-            description: "Powtórzyć rozdział o układzie krwionośnym i zrobić notatki z najważniejszych pojęć.",
-            category: o_applicationInfo.$categories[2],
-        },
-        {
-            topic: "Analiza raportu kwartalnego",
-            description: "Przejrzeć dane sprzedażowe z ostatnich 3 miesięcy i przygotować krótką prezentację na spotkanie.",
-            category: o_applicationInfo.$categories[3],
-        },
-        {
-            topic: "Generalne porządki w kuchni",
-            description: "Przejrzeć daty ważności w szafkach, umyć lodówkę i uporządkować przyprawy.",
-            category: o_applicationInfo.$categories[4], // Dom
-        },
-        {
-            topic: "Rezerwacja biletów do kina",
-            description: "Sprawdzić repertuar na weekend i kupić dwa bilety na seans wieczorny.",
-            category: o_applicationInfo.$categories[5], // Inne
-        },
-        {
-            topic: "Planowanie budżetu",
-            description: "Podsumować wydatki z zeszłego miesiąca i ustalić limity na jedzenie oraz rozrywkę.",
-            category: o_applicationInfo.$categories[1], // Czas wolny (lub Inne)
-        }
-    ]
+    static $categories = [
+        {key: "freeTime", value: "Czas wolny"},
+        {key: "school", value: "Szkoła"},
+        {key: "job", value: "Praca"},
+        {key: "house", value: "Dom"},
+        {key: "others", value: "Inne"}
+    ];
+
+    static $appFonts = [
+        {key: "sans-serif", value: "Sans serif"},
+        {key: "serif", value: "Serif"},
+        {key: "Arial", value: "Arial"},
+        {key: "Calibri", value: "Calibri"},
+        {key: "Comic Sans Ms", value: "Comic Sans Ms"},
+    ];
+
+    static $choosedFont = localStorage.getItem("myToDoChoosedFont");
+
+    static $primaryAppColor = localStorage.getItem("myToDoPrimaryColor") || window.getComputedStyle(document.body).getPropertyValue("--primary-color");
+
+    static $tasks = o_applicationInfo.loadTasks();
+
+    static loadTasks() {
+        const savedTasks = localStorage.getItem("myToDoTasks");
+        if(savedTasks) return JSON.parse(savedTasks);
+        return [
+            {
+                topic: "Pierwsze zadanie",
+                description: "Dodaj swoje pierwsze zadanie a mnie potem usuń!",
+                category: this.$categories[0],
+                date: ""
+            }
+        ];
+    }
+
+    static saveTasks() {
+        localStorage.setItem("myToDoTasks", JSON.stringify(this.$tasks));
+    }
 }
+
+// ustawianie wartości zapamiętanych przez local storage
+document.documentElement.style.setProperty('--app-font-family', o_applicationInfo.$choosedFont);
+document.documentElement.style.setProperty('--primary-color', o_applicationInfo.$primaryAppColor);
+
+window.o_applicationInfo = o_applicationInfo;

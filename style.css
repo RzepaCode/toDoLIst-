@@ -64,6 +64,12 @@
         outline: none;
     }
 
+    .toDoHeader .todo-input-wrapper input, select{
+        width: 100% !important;
+        height: 100% !important;
+        box-sizing: border-box;
+    }
+
     .toDoHeader .categoryFilter:hover,
     .toDoHeader .timeFilter:hover,
     .toDoHeader .deleteChecked:hover{
