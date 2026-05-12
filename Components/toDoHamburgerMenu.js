@@ -1,4 +1,4 @@
-export class o_toDoButton {
+export class o_toDoHambugerMenu {
     #element;
     constructor($def, $parentObject = null) {
         this.#m_onCreate($def, $parentObject);
@@ -33,6 +33,14 @@ export class o_toDoButton {
             t.#element.addEventListener("click", (event) => {
                 this.Action(event);
             });
+        }
+
+        // Tworzenie barów
+        let $i;
+        for ($i = 0; $i < 3; $i++) {
+            const $span = document.createElement('span');
+            $span.classList.add("bar");
+            t.#element.appendChild($span);
         }
 
         // dodanie do parenta

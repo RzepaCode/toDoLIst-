@@ -9,11 +9,10 @@ export class o_toDoH {
             hValue = 4,
             text = null
         } = $def;
-        const t = this;
 
-        t.#element = document.createElement(`h${hValue}`);
-        t.#element.innerText = text;
+        this.#element = document.createElement(`h${hValue}`);
+        this.#element.innerText = text;
 
-        $parentObject && ($parentObject.appendChild(t.#element));
+        $parentObject && ($parentObject.appendChild(this.#element));
     }
 }

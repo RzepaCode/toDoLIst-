@@ -9,7 +9,7 @@ export class o_toDoSection {
     #element;
     #childrens = [];
 
-    constructor($def = {}, $parentObject) {
+    constructor($def, $parentObject) {
         this.#m_onCreate($def, $parentObject);
     }
 

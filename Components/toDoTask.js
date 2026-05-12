@@ -3,7 +3,10 @@ import { o_toDoInput } from "./toDoInput.js";
 
 export class o_toDoTask {
     #element;
+    taskData;
+
     constructor($def) {
+        this.taskData = $def;
         this.#m_onCreate($def);
     }
 
@@ -18,87 +21,62 @@ export class o_toDoTask {
         const t = this;
         const $parentObject = document.getElementsByClassName("toDoContent")[0];
 
-        //  Kontener główny
+        if (!$parentObject) return;
+
         t.#element = this.#createDiv("taskContainer");
         t.#element.style.display = "flex";
 
-        // Sekcja Checkbox
-        const $taskCheckSection = this.#createDiv("taskCheckSection");
-        t.#element.appendChild($taskCheckSection);
+        const categoryData = (category && category.key !== undefined) ? category : { key: "others", value: "inne" };
 
+        const $taskCheckSection = this.#createDiv("taskCheckSection", t.#element);
         new o_toDoInput({
-            typeInput: "checkbox", className: "taskCheckbox"
+            typeInput: "checkbox",
+            className: "taskCheckbox"
         }, $taskCheckSection);
 
-        // Sekcja Info
-        const $taskInfoSection = this.#createDiv("taskInfoSection");
-        t.#element.appendChild($taskInfoSection);
-
-        t.topic = this.#getValue(topic, "brak tematu");
-        new o_toDoH({
-            hValue: 3, text: t.topic
-        }, $taskInfoSection);
+        const $taskInfoSection = this.#createDiv("taskInfoSection", t.#element);
+        new o_toDoH({ hValue: 3, text: this.#getValue(topic, "brak tematu") }, $taskInfoSection);
 
         const $descriptionContainer = document.createElement("p");
-        t.description = this.#getValue(description, "brak opisu");
-        $descriptionContainer.innerText = t.description;
+        $descriptionContainer.innerText = this.#getValue(description, "brak opisu");
         $taskInfoSection.appendChild($descriptionContainer);
 
-        // Sekcja Meta (Kategoria i Data)
-        const $taskMetaSection = this.#createDiv("taskMetaSection");
-        t.#element.appendChild($taskMetaSection);
+        const $taskMetaSection = this.#createDiv("taskMetaSection", t.#element);
+        const $taskCategory = this.#createDiv("taskCategory", $taskMetaSection);
+        $taskCategory.innerText = categoryData.value;
 
-        // Kategoria
-        const $taskCategory = this.#createDiv("taskCategory");
-        $taskMetaSection.appendChild($taskCategory);
-        t.category = this.#getValue(category, "brak kategorii");
-        $taskCategory.innerText = t.category;
+        const $taskTime = this.#createDiv("taskTime", $taskMetaSection);
+        const finalDate = this.#getValue(date, "brak daty");
+        $taskTime.innerText = finalDate;
 
-        // Data (Z logiką kolorów)
-        const $taskTime = this.#createDiv("taskTime");
-        $taskMetaSection.appendChild($taskTime);
-        t.date = this.#getValue(date, "brak daty");
-        $taskTime.innerText = t.date;
-
-        // dodawanie klasy koloru
-        const colorClass = this.#getDateClass(t.date);
+        const colorClass = this.#getDateClass(finalDate);
         colorClass && ($taskTime.classList.add(colorClass));
 
         $parentObject.prepend(t.#element);
     }
 
-
     #getValue(val, fallback) {
         return (val === null || val === undefined || val === "") ? fallback : val;
     }
 
-    #createDiv(className, parent) {
+    #createDiv(className, parent = null) {
         const div = document.createElement("div");
         div.classList.add(className);
-        parent && (parent.appendChild(div));
+        if (parent) parent.appendChild(div);
         return div;
     }
 
     #getDateClass(dateStr) {
         if (dateStr === "brak daty") return null;
-
         const taskDate = new Date(dateStr);
         const today = new Date();
-
-        // Resetujemy godziny, minuty i sekundy, żeby porównywać tylko dni kalendarzowe
         today.setHours(0, 0, 0, 0);
         taskDate.setHours(0, 0, 0, 0);
-
-        // Obliczamy różnicę w milisekundach i zamieniamy na dni
-        const diffInMs = taskDate - today;
-        const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
-
+        const diffInDays = (taskDate - today) / (1000 * 60 * 60 * 24);
         if (diffInDays < 0) return "red";
         if (diffInDays <= 2) return "orange";
         return "green";
     }
 
-    get element() {
-        return this.#element;
-    }
+    get element() { return this.#element; }
 }
