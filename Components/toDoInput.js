@@ -1,5 +1,5 @@
 export class o_toDoInput {
-    #element; // To będzie nasz wrapper (div)
+    #element; 
     #inputElement;
 
     constructor($def, $parentObject = null) {
