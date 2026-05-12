@@ -13,6 +13,7 @@ export class o_applicationInfo{
         {key: "Arial", value: "Arial"},
         {key: "Calibri", value: "Calibri"},
         {key: "Comic Sans Ms", value: "Comic Sans Ms"},
+        {key: "Courier New", value: "Courier New"},
     ];
 
     static $choosedFont = localStorage.getItem("myToDoChoosedFont");

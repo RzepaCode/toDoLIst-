@@ -19,10 +19,10 @@ export class o_ToDoList {
         // toDoHeader values
         this.$categoryFilterValue = "";
         this.$dateFilterValue = "";
-
-        // task window values
         this.$topicValueTask = "";
         this.$descriptionValueTask = "";
+
+        // task window values
         this.$categoryValueTask = "";
         this.$dateValueTask = "";
 
@@ -245,7 +245,7 @@ export class o_ToDoList {
             const dateMatches = (this.$dateFilterValue === "" || taskData.date === this.$dateFilterValue);
 
             // Ukrywanie lub pokazanie elementu w DOM
-            taskInstance.element.style.display = (catMatches && dateMatches) ? 'flex' : 'none';
+            taskInstance.element.style.display = (catMatches && dateMatches) && ('flex') || ('none');
         });
     }
 }
