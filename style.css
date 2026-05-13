@@ -14,7 +14,6 @@
         font-family: var(--app-font-family), sans-serif;
     }
 
-
     /* Potrzebne aby było widoczne klikanie tab na poszczególnych elementach */
     input:focus-visible,
     textarea:focus-visible,
@@ -27,11 +26,11 @@
     }
 
     /* główny div to do listy */
-    #wrapperToDoList {
+    .wrapperToDoList {
+        position: relative;
         width: 50%;
         min-width: 500px;
-        min-height: 600px;
-        max-height: 600px;
+        height: 600px;
         display: flex;
         flex-direction: column;
         margin: 20px;
@@ -65,7 +64,7 @@
         outline: none;
     }
 
-    .toDoHeader .todo-input-wrapper input, select{
+    .toDoHeader .toDoInputWrapper input, select{
         width: 100% !important;
         height: 100% !important;
         box-sizing: border-box;
@@ -123,8 +122,8 @@
         flex-direction: column;
         gap: 12px;
         overflow-y: auto;
-        max-height: 600px;
         padding-right: 8px;
+        padding-bottom: 70px; /* Dodatkowe miejsce, żeby przycisk nie zasłaniał tekstu ostatniego zadania */
         box-sizing: border-box;
     }
 
@@ -238,24 +237,21 @@
 
     /* Task Button */
     .taskButton {
-        position: sticky;
-        align-self: flex-end;
-        margin-bottom: 15px;
-        margin-top: 5px;
-        bottom: 15px;
-        right: 5px;
-        flex-shrink: 0;
-        width: 56px !important; /* bez important jest rozciągnięty */
-        height: 56px !important;
-        background: var(--primary-color);
-        border-radius: 50%;
-        border: none;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4);
-        cursor: pointer;
-        transition: all 0.2s ease;
+    position: absolute;
+    bottom: 25px;
+    right: 25px;
+
+    width: 56px !important;
+    height: 56px !important;
+    background: var(--primary-color);
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 10px 15px -3px rgba(80, 70, 230, 0.4);
+    cursor: pointer;
+    transition: all 0.2s ease;
     }
 
     .taskButton span {
@@ -273,7 +269,7 @@
     }
 
     /* Kontener główny ruchomego okna */
-    .floating-window {
+    .floatingWindow {
         position: absolute;
         top: 50px;
         right: 50px;
@@ -288,15 +284,15 @@
         user-select: none;
     }
 
-    .floating-window h4{
+    .floatingWindow h4{
         margin-top: 30px;
         margin-bottom: 2px;
     }
 
-    .floating-window input,
-    .floating-window textarea,
-    .floating-window select,
-    .floating-window button:not(.close-btn, .confirm-btn) {
+    .floatingWindow input,
+    .floatingWindow textarea,
+    .floatingWindow select,
+    .floatingWindow button:not(.closeBtn, .confirmBtn) {
         width: 100%;
         margin-top: 5px;
         margin-bottom: 8px;
@@ -311,35 +307,35 @@
         outline: none;
     }
 
-    .floating-window input:hover,
-    .floating-window textarea:hover,
-    .floating-window select:hover,
-    .floating-window button:hover:not(.close-btn)  {
+    .floatingWindow input:hover,
+    .floatingWindow textarea:hover,
+    .floatingWindow select:hover,
+    .floatingWindow button:hover:not(.closeBtn)  {
         transform: translateY(-2px);
         box-shadow: var(--shadow-hover);
         border-color: var(--primary-color);
     }
 
-    .floating-window textarea {
+    .floatingWindow textarea {
         height: 80%;
         min-height: 140px;
         resize: none;
     }
 
-    .floating-window button:not(.close-btn, .confirm-btn) {
+    .floatingWindow button:not(.closeBtn, .confirmBtn) {
         width: 25%;
         margin-left: 10px;
         padding: 8px 12px;
         cursor: pointer;
     }
 
-    .floating-window select,
-    .floating-window input[type=color]{
+    .floatingWindow select,
+    .floatingWindow input[type=color]{
         cursor: pointer;
     }
 
     /* Przycisk do zamknięcia okna (X) */
-    .close-btn {
+    .closeBtn {
         position: absolute;
         top: 30px;
         right: 30px;
@@ -351,12 +347,12 @@
         transition: color 0.2s;
     }
 
-    .close-btn:hover {
+    .closeBtn:hover {
         color: var(--primary-color);
     }
 
     /* Przycisk potwierdzenia w task window */
-    .confirm-btn {
+    .confirmBtn {
         display: flex;
         margin-left: auto;
         margin-top: 15px;
@@ -374,7 +370,7 @@
         transition: all 0.2s ease;
     }
 
-    .confirm-btn:hover {
+    .confirmBtn:hover {
         transform: translateY(-2px);
         filter: brightness(1.1);
     }

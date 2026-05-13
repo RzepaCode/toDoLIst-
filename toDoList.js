@@ -27,13 +27,19 @@ export class o_ToDoList {
         this.$dateValueTask = "";
 
         // to do list values
+        this.$tasks = this.#m_loadTasks();
         this.$renderedTasks = [];
+        this.$checkedTasks = [];
 
+        this.$choosedFont = localStorage.getItem("myToDoChoosedFont");
+        this.$primaryAppColor = localStorage.getItem("myToDoPrimaryColor") || window.getComputedStyle(document.body).getPropertyValue("--primary-color");
+        document.documentElement.style.setProperty('--app-font-family', this.$choosedFont);
+        document.documentElement.style.setProperty('--primary-color',this.$primaryAppColor);
         // ==========================
         // === główny wrapper ===
 
         const $wrapperToDoList = document.createElement("div");
-        $wrapperToDoList.setAttribute("id", "wrapperToDoList");
+        $wrapperToDoList.classList.add("wrapperToDoList");
 
         // ==========================
         // === header listy ===
@@ -78,19 +84,27 @@ export class o_ToDoList {
             className: "deleteChecked",
             text: "Usuń",
             Action: _ => {
-                const selectedTasks = this.$renderedTasks.filter(instance => {
-                    const checkbox = instance.element.querySelector('input[type="checkbox"]');
-                    return checkbox && checkbox.checked;
+                // Wyciągamy ID zaznaczonych zadań
+                const idsToDelete = this.$checkedTasks.map(task => task.id);
+
+                if (idsToDelete.length === 0) return;
+
+                // Usuwamy z lokal storage
+                this.$tasks = this.$tasks.filter(task => !idsToDelete.includes(task.id));
+
+                // Usuwamy z DOM tylko te, które są aktualnie wyrenderowane
+                this.$renderedTasks.forEach(instance => {
+                    idsToDelete.includes(instance.taskData.id) && (instance.element.remove());
                 });
 
-                selectedTasks.forEach(instance => instance.element.remove());
+                // Czyścimy listę renderowanych instancji z usuniętych elementów
+                this.$renderedTasks = this.$renderedTasks.filter(
+                    instance => !idsToDelete.includes(instance.taskData.id)
+                );
 
-                this.$renderedTasks = this.$renderedTasks.filter(instance => {
-                    return selectedTasks.includes(instance) === false;
-                });
-
-                o_applicationInfo.$tasks = this.$renderedTasks.map(instance => instance.taskData);
-                o_applicationInfo.saveTasks();
+                // Czyszczenie tablicy zaznaczonych i zapis
+                this.$checkedTasks = [];
+                this.#m_saveTasks();
             }
         }, $toDoHeader)
 
@@ -99,27 +113,25 @@ export class o_ToDoList {
         // ==========================
         // === Content listy ===
 
-        const $toDoContent = document.createElement("div");
-        $toDoContent.classList.add("toDoContent");
+        this.$toDoContent = document.createElement("div");
+        this.$toDoContent.classList.add("toDoContent");
 
         // --- task button (dodawanie) ---
         new o_toDoButton({
             className: "taskButton",
             text: "<span>+</span>",
             Action: _ => this.#m_openTaskPopup()
-        }, $toDoContent)
+        }, this.$toDoContent)
 
-        $wrapperToDoList.appendChild($toDoContent);
+        $wrapperToDoList.appendChild(this.$toDoContent);
 
         // ==========================
         // === to do lista do app + tasks ===
 
         document.getElementById("app").appendChild($wrapperToDoList);
 
-        o_applicationInfo.$tasks.forEach(taskObj => {
-            const taskInstance = new o_toDoTask(taskObj);
-            this.$renderedTasks.push(taskInstance);
-        });
+        // Pierwsze renderowanie zadań
+        this.#m_applyFilters();
     }
 
 
@@ -139,11 +151,11 @@ export class o_ToDoList {
                 {
                     type: "o_toDoInput",
                     typeInput: "color",
-                    valueInput: o_applicationInfo.$primaryAppColor,
+                    valueInput: this.$primaryAppColor,
                     width: "50%",
                     height: "60px",
                     Action: function() {
-                        o_applicationInfo.$primaryAppColor = this.value;
+                        this.$primaryAppColor = this.value;
                         document.documentElement.style.setProperty('--primary-color', this.value);
                         localStorage.setItem("myToDoPrimaryColor", this.value);
                     }
@@ -158,9 +170,9 @@ export class o_ToDoList {
                     width: "50%",
                     height: "50px",
                     options: o_applicationInfo.$appFonts,
-                    selectValue: o_applicationInfo.$choosedFont,
+                    selectValue: this.$choosedFont,
                     Action: function (){
-                        o_applicationInfo.$choosedFont = this.value;
+                        this.$choosedFont = this.value;
                         document.documentElement.style.setProperty('--app-font-family', this.value);
                         localStorage.setItem("myToDoChoosedFont", this.value);
                     }
@@ -207,7 +219,7 @@ export class o_ToDoList {
                 // --- przycisk potwierdzenia ---
                 {
                     type: "o_toDoButton",
-                    className: "confirm-btn",
+                    className: "confirmBtn",
                     text: "✓",
                     Action: _ => {
                         const selectedCategory = o_applicationInfo.$categories.find(
@@ -215,20 +227,18 @@ export class o_ToDoList {
                         ) || o_applicationInfo.$categories[0];
 
                         const newTask = {
+                            id: window.crypto.randomUUID(),
                             topic: this.$topicValueTask,
                             description: this.$descriptionValueTask,
                             category: {
                                 key: selectedCategory.key,
                                 value: selectedCategory.value
                             },
-                            date: this.$dateValueTask
+                            date: this.$dateValueTask,
                         };
 
-                        o_applicationInfo.$tasks.push(newTask);
-                        o_applicationInfo.saveTasks();
-
-                        const taskInstance = new o_toDoTask(newTask);
-                        this.$renderedTasks.push(taskInstance);
+                        this.$tasks.push(newTask);
+                        this.#m_saveTasks();
                         this.#m_applyFilters();
                     }
                 }
@@ -236,16 +246,37 @@ export class o_ToDoList {
         })
     }
 
-    #m_applyFilters() {
-        this.$renderedTasks.forEach((taskInstance) => {
-            const taskData = taskInstance.taskData;
+    #m_loadTasks() {
+        const savedTasks = localStorage.getItem("myToDoTasks");
+        if(savedTasks) return JSON.parse(savedTasks);
+        return [];
+    }
 
-            // Logika sprawdzania dopasowania filtrów
+    #m_saveTasks() {
+        localStorage.setItem("myToDoTasks", JSON.stringify(this.$tasks));
+    }
+
+    #m_applyFilters() {
+        // Czyścimy aktualnie wyrenderowane elementy z DOM
+        this.$renderedTasks.forEach(instance => instance.element.remove());
+        this.$renderedTasks = [];
+
+        // Filtrujemy dane z tablicy głównej tasks
+        const filteredData = this.$tasks.filter(taskData => {
             const catMatches = (this.$categoryFilterValue === "" || taskData.category.key === this.$categoryFilterValue);
             const dateMatches = (this.$dateFilterValue === "" || taskData.date === this.$dateFilterValue);
+            return catMatches && dateMatches;
+        });
 
-            // Ukrywanie lub pokazanie elementu w DOM
-            taskInstance.element.style.display = (catMatches && dateMatches) && ('flex') || ('none');
+        // Tworzymy nowe obiekty dla pasujących zadań (one same dodadzą się do DOM w constructorze)
+        filteredData.forEach(taskObj => {
+            const taskInstance = new o_toDoTask({
+                ...taskObj,
+                owner: this,
+                dataSource: "$checkedTasks"
+            }, this.$toDoContent);
+
+            this.$renderedTasks.push(taskInstance);
         });
     }
 }
