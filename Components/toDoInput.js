@@ -1,8 +1,8 @@
 export class o_toDoInput {
-    #element; 
+    #element;
     #inputElement;
 
-    constructor($def, $parentObject = null) {
+    constructor($def, $parentObject) {
         this.#m_onCreate($def, $parentObject);
     }
 
@@ -21,50 +21,52 @@ export class o_toDoInput {
             Action = null
         } = $def;
 
-        const t = this;
-
         // Tworzymy wrapper
-        t.#element = document.createElement("div");
-        t.#element.classList.add("todo-input-wrapper");
+        this.#element = document.createElement("div");
+        this.#element.classList.add("toDoInputWrapper");
 
         // width
-        width !== null && (t.#element.style.width = width);
+        width !== null && (this.#element.style.width = width);
 
         // Obsługa Labela
         if (label !== null) {
             const labelElement = document.createElement("label");
             labelElement.innerHTML = label;
 
-            t.#element.appendChild(labelElement);
+            this.#element.appendChild(labelElement);
         }
 
         // Tworzenie Inputa
-        t.#inputElement = document.createElement("input");
+        this.#inputElement = document.createElement("input");
 
-        className !== null && (t.#inputElement.classList.add(className));
-        idName !== null && (t.#inputElement.setAttribute("id", idName));
+        className !== null && (this.#inputElement.classList.add(className));
+        idName !== null && (this.#inputElement.setAttribute("id", idName));
 
-        t.#inputElement.type = typeInput;
-        valueInput !== null && (t.#inputElement.value = valueInput);
-        height !== null && (t.#inputElement.style.height = height);
-        placeHolder !== null && (t.#inputElement.placeholder = placeHolder);
+        this.#inputElement.type = typeInput;
+        valueInput !== null && (this.#inputElement.value = valueInput);
+        height !== null && (this.#inputElement.style.height = height);
+        placeHolder !== null && (this.#inputElement.placeholder = placeHolder);
 
         // Zdarzenie onChange
-        t.#inputElement.addEventListener("change", (event) => {
+        this.#inputElement.addEventListener("change", (event) => {
             if (owner && typeof dataSource === "string") {
-                owner[dataSource] = t.#inputElement.value;
+                owner[dataSource] = this.#inputElement.value;
             }
-            (Action != null) && (Action.call(t.#inputElement, event));
+            Action != null && (Action.call(this.#inputElement, event));
         });
 
-        t.#element.appendChild(t.#inputElement);
+        this.#element.appendChild(this.#inputElement);
 
         //Dodanie całości do parenta
-        $parentObject instanceof HTMLElement && ($parentObject.appendChild(t.#element))
+        $parentObject instanceof HTMLElement && ($parentObject.appendChild(this.#element))
     }
 
     // Zwraca wrapper
     get element() {
         return this.#element;
+    }
+
+    get inputElement() {
+        return this.#inputElement;
     }
 }

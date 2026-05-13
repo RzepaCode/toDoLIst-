@@ -10,19 +10,17 @@ export class o_toDoLabel {
             height = null,
             text = null,
         } = $def;
-        const t = this;
-
         // tworzenie elementu
-        t.#element = document.createElement("label");
+        this.#element = document.createElement("label");
 
         // styl: width / height
-        width !== null && (t.#element.style.width = width);
-        height !== null && (t.#element.style.height = height);
+        width !== null && (this.#element.style.width = width);
+        height !== null && (this.#element.style.height = height);
 
         // tekst
-        text !== null && (t.#element.innerHTML= text);
+        text !== null && (this.#element.innerHTML= text);
 
-        $parentObject && ($parentObject.appendChild(t.#element));
+        $parentObject && ($parentObject.appendChild(this.#element));
     }
 
     get element() {

@@ -14,7 +14,6 @@ export class o_toDoPopUp {
             content = [],
             uniqueName = null
         } = $def;
-        const t = this;
 
         if (uniqueName && o_toDoPopUp.#instances[uniqueName]) {
             console.warn(`PopUp o nazwie "${uniqueName}" jest już otwarty.`);
@@ -22,20 +21,19 @@ export class o_toDoPopUp {
         }
 
         this.#uniqueName = uniqueName;
-        // Jeśli podano nazwę, zapisujemy tę instancję w rejestrze
         this.#uniqueName && (o_toDoPopUp.#instances[this.#uniqueName] = this);
 
         // Tworzenie struktury okna
         const $floatingWindow = new o_toDoSection(
             {
-                className: "floating-window",
+                className: "floatingWindow",
                 content: [
                     {
                         type: "o_toDoButton",
-                        className: "close-btn",
+                        className: "closeBtn",
                         text: "X",
                         Action: _ => {
-                            t.destroy();
+                            this.m_destroy();
                         },
                     },
                     ...(Array.isArray(content) ? content : [content])
@@ -44,20 +42,20 @@ export class o_toDoPopUp {
             document.body
         );
 
-        t.#element = $floatingWindow.element;
+        this.#element = $floatingWindow.element;
 
         // Logika przesuwania okna
         const $tagsToIgnore = ['INPUT', 'TEXTAREA', 'BUTTON', 'SELECT'];
         let $isDragging = false;
         let $offsetX, $offsetY;
 
-        t.#element.addEventListener('mousedown', ($event) => {
+        this.#element.addEventListener('mousedown', ($event) => {
             if ($tagsToIgnore.includes($event.target.tagName)) return;
 
             $isDragging = true;
 
-            $offsetX = $event.clientX - t.#element.offsetLeft;
-            $offsetY = $event.clientY - t.#element.offsetTop;
+            $offsetX = $event.clientX - this.#element.offsetLeft;
+            $offsetY = $event.clientY - this.#element.offsetTop;
         });
 
         const handleMouseMove = ($event) => {
@@ -68,14 +66,14 @@ export class o_toDoPopUp {
             let $newY = $event.clientY - $offsetY;
 
             // Ograniczenie do granic okna
-            const $maxX = window.innerWidth - t.#element.offsetWidth;
-            const $maxY = window.innerHeight - t.#element.offsetHeight;
+            const $maxX = window.innerWidth - this.#element.offsetWidth;
+            const $maxY = window.innerHeight - this.#element.offsetHeight;
 
             $newX = Math.max(0, Math.min($newX, $maxX));
             $newY = Math.max(0, Math.min($newY, $maxY));
 
-            t.#element.style.left = $newX + 'px';
-            t.#element.style.top = $newY + 'px';
+            this.#element.style.left = $newX + 'px';
+            this.#element.style.top = $newY + 'px';
         };
 
         const handleMouseUp = () => {
@@ -86,14 +84,9 @@ export class o_toDoPopUp {
         document.addEventListener('mouseup', handleMouseUp);
     }
 
-    destroy() {
-        if (this.#uniqueName) {
-            delete o_toDoPopUp.#instances[this.#uniqueName];
-        }
-
-        if (this.#element) {
-            this.#element.remove();
-        }
+    m_destroy() {
+        this.#uniqueName && (delete o_toDoPopUp.#instances[this.#uniqueName]);
+        this.#element && (this.#element.remove());
     }
 
     get element() {

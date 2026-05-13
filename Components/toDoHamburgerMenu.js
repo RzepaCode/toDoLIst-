@@ -1,6 +1,6 @@
 export class o_toDoHambugerMenu {
     #element;
-    constructor($def, $parentObject = null) {
+    constructor($def, $parentObject) {
         this.#m_onCreate($def, $parentObject);
     }
 
@@ -12,25 +12,24 @@ export class o_toDoHambugerMenu {
             text = null,
             Action = null,
         } = $def;
-        const t = this;
 
         // tworzenie elementu
-        t.#element = document.createElement("button");
+        this.#element = document.createElement("button");
 
         // klasa
-        className !== null && (t.#element.classList.add(className));
+        className !== null && (this.#element.classList.add(className));
 
         // styl: width / height
-        width !== null && (t.#element.style.width = width);
-        height !== null && (t.#element.style.height = height);
+        width !== null && (this.#element.style.width = width);
+        height !== null && (this.#element.style.height = height);
 
         // tekst
-        text !== null && (t.#element.innerHTML= text);
+        text !== null && (this.#element.innerHTML= text);
 
         // onClick
         if (typeof Action === "function") {
             this.Action = Action;
-            t.#element.addEventListener("click", (event) => {
+            this.#element.addEventListener("click", (event) => {
                 this.Action(event);
             });
         }
@@ -40,7 +39,7 @@ export class o_toDoHambugerMenu {
         for ($i = 0; $i < 3; $i++) {
             const $span = document.createElement('span');
             $span.classList.add("bar");
-            t.#element.appendChild($span);
+            this.#element.appendChild($span);
         }
 
         // dodanie do parenta

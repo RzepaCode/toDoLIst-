@@ -21,31 +21,30 @@ export class o_toDoSection {
             height = null,
             content = null
         } = $def;
-        const t = this;
-        t.#element = document.createElement("div");
+        this.#element = document.createElement("div");
 
         // klasa
-        className !== null && (t.#element.classList.add(className));
+        className !== null && (this.#element.classList.add(className));
 
         // Id
-        idName && (t.#element.setAttribute("id", idName));
+        idName && (this.#element.setAttribute("id", idName));
 
         // styl: width / height
-        width !== null && (t.#element.style.width = width);
-        height !== null && (t.#element.style.height = height);
+        width !== null && (this.#element.style.width = width);
+        height !== null && (this.#element.style.height = height);
 
         if ($def.content && Array.isArray($def.content)) {
             $def.content.forEach(childDef => {
-                const childIns = t.#pCreateClassByName(childDef.type, childDef, this.#element);
+                const childIns = this.#m_pCreateClassByName(childDef.type, childDef, this.#element);
 
-                childIns && (t.#childrens.push(childIns));
+                childIns && (this.#childrens.push(childIns));
             });
         }
 
         $parentObject instanceof HTMLElement && ($parentObject.appendChild(this.#element));
     }
 
-    #pCreateClassByName(ClassName, ...a) {
+    #m_pCreateClassByName(ClassName, ...a) {
         const c = eval(ClassName);
         return new c(...a);
     }

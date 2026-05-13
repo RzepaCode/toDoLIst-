@@ -18,48 +18,46 @@ export class o_toDoTextArea {
             label = null
         } = $def;
 
-        const t = this;
-
         // Wrapper
-        t.#element = document.createElement("div");
+        this.#element = document.createElement("div");
 
         // wrapper
-        width !== null && (t.#element.style.width = width);
+        width !== null && (this.#element.style.width = width);
 
         // Label
         if (label !== null) {
             const labelElement = document.createElement("label");
             labelElement.innerHTML = label;
-            t.#element.appendChild(labelElement);
+            this.#element.appendChild(labelElement);
         }
 
         // TextArea
-        t.#textAreaElement = document.createElement("textarea");
+        this.#textAreaElement = document.createElement("textarea");
 
-        t.#textAreaElement.addEventListener("change", () => {
+        this.#textAreaElement.addEventListener("change", () => {
             if (owner && typeof dataSource === "string") {
-                owner[dataSource] = t.#textAreaElement.value;
+                owner[dataSource] = this.#textAreaElement.value;
             }
         });
 
         // klasa i Id
-        className !== null && (t.#textAreaElement.classList.add(className));
-        idName && (t.#textAreaElement.setAttribute("id", idName));
+        className !== null && (this.#textAreaElement.classList.add(className));
+        idName && (this.#textAreaElement.setAttribute("id", idName));
 
         // Wysokość przypisujemy do pola tekstowego
-        height !== null && (t.#textAreaElement.style.height = height);
+        height !== null && (this.#textAreaElement.style.height = height);
 
         // Szerokość 100%, aby wypełniał wrappera
-        t.#textAreaElement.style.width = "100%";
+        this.#textAreaElement.style.width = "100%";
 
         // Wstawianie tekstu
-        text !== null && (t.#textAreaElement.value = text);
+        text !== null && (this.#textAreaElement.value = text);
 
         // Dodanie textarea do wrappera
-        t.#element.appendChild(t.#textAreaElement);
+        this.#element.appendChild(this.#textAreaElement);
 
         // Dodanie wrappera do parenta
-        $parentObject instanceof HTMLElement && ($parentObject.appendChild(t.#element));
+        $parentObject instanceof HTMLElement && ($parentObject.appendChild(this.#element));
     }
 
     get element() {
