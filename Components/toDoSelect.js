@@ -15,7 +15,6 @@ export class o_toDoSelect {
             width = null,
             height = null,
             options = [],
-            selectValue = null,
             Action = null,
             label = null
         } = $def;
@@ -63,7 +62,7 @@ export class o_toDoSelect {
         }
 
         // wartość selecta przy tworzeniu
-        selectValue !== null && (this.#selectElement.value = selectValue);
+        owner && owner[dataSource] && (this.#selectElement.value = owner[dataSource]);
 
         this.Action = Action;
         this.#selectElement.addEventListener("change", (event) => {

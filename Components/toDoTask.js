@@ -3,38 +3,33 @@ import { o_toDoInput } from "./toDoInput.js";
 
 export class o_toDoTask {
     #element;
-    taskData;
+    #taskData;
+    #isChecked;
     constructor($def, $parentObject) {
         const {owner, dataSource, ...pureData} = $def;
-        this.taskData = pureData;
+        this.#taskData = pureData;
 
         this.#m_onCreate($def, $parentObject);
     }
 
     #m_onCreate($def, $parentObject) {
         const {
-            owner = null,
-            dataSource = null,
-            id = null,
-            topic = null,
-            description = null,
-            category = null,
-            date = null,
+            owner,
+            dataSource,
+            id,
+            topic,
+            description,
+            categoryKey,
+            date,
         } = $def;
 
         const t = this;
-        t.isChecked = false;
-        if (owner && owner[dataSource] && Array.isArray(owner[dataSource])) {
-            t.isChecked = owner[dataSource].some(task => task.id === id);
-        }
-
+        this.#isChecked = !!(owner && owner[dataSource]);
         // Tworzenie głównego kontenera
         t.#element = document.createElement("div");
         t.#element.classList.add("taskContainer");
         t.#element.style.display = "flex";
 
-        // Obsługa kategorii
-        const categoryData = (category && category.key !== undefined) ? category : o_applicationInfo.$categories[0];
 
         // Checkbox
         const $taskCheckSection = document.createElement("div");
@@ -45,17 +40,13 @@ export class o_toDoTask {
             typeInput: "checkbox",
             className: "taskCheckbox",
             Action: function() {
-                if (t.isChecked === false && owner && typeof dataSource === "string") {
-                    owner[dataSource].push(t.taskData);
-                    t.isChecked = true;
-                } else if (owner && owner[dataSource]) {
-                    owner[dataSource] = owner[dataSource].filter(task => task.id !== id);
-                    t.isChecked = false;
-                }
+                if(!owner) return;
+                t.#isChecked = !t.#isChecked;
+                t.#isChecked && (owner[dataSource] = true) || (delete owner[dataSource]);
             }
         }, $taskCheckSection);
 
-        myCheckBoxElement.inputElement.checked = t.isChecked;
+        myCheckBoxElement.inputElement.checked = t.#isChecked;
 
         // Sekcja Informacyjna
         const $taskInfoSection = document.createElement("div");
@@ -81,7 +72,8 @@ export class o_toDoTask {
         // Kontener kategorii
         const $taskCategory = document.createElement("div");
         $taskCategory.classList.add("taskCategory");
-        $taskCategory.innerText = categoryData.value;
+        const foundCategory = o_applicationInfo.$categories.find(cat => cat.key === categoryKey);
+        $taskCategory.innerText = foundCategory ? foundCategory.value : "Inne";
         $taskMetaSection.appendChild($taskCategory);
 
         // Kontener daty
@@ -120,7 +112,16 @@ export class o_toDoTask {
         return "green";
     }
 
+    m_destroy(){
+        this.element.remove();
+    }
+
     get element() {
         return this.#element;
     }
+
+    get id() {
+        return this.#taskData.id;
+    }
+
 }

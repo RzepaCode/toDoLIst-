@@ -11,7 +11,6 @@ export class o_toDoInput {
             owner = null,
             dataSource = null,
             typeInput = "text",
-            valueInput = null,
             className = null,
             idName = null,
             width = null,
@@ -43,7 +42,7 @@ export class o_toDoInput {
         idName !== null && (this.#inputElement.setAttribute("id", idName));
 
         this.#inputElement.type = typeInput;
-        valueInput !== null && (this.#inputElement.value = valueInput);
+        owner && typeof dataSource === "string"&& (this.#inputElement.value = owner[dataSource]);
         height !== null && (this.#inputElement.style.height = height);
         placeHolder !== null && (this.#inputElement.placeholder = placeHolder);
 
