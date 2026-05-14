@@ -7,6 +7,7 @@ import {o_toDoPopUp} from "./Components/toDoPopUp.js";
 import {o_toDoLabel} from "./Components/toDoLabel.js";
 import {o_toDoTask} from "./Components/toDoTask.js";
 import {o_toDoHambugerMenu} from "./Components/toDoHamburgerMenu.js"
+import {o_ToDoStorage} from "./toDoLocalStorage.js";
 
 export class o_ToDoList {
     constructor() {
@@ -31,8 +32,8 @@ export class o_ToDoList {
         this.$renderedTasks = [];
         this.$checkedTasks = [];
 
-        this.$choosedFont = localStorage.getItem("myToDoChoosedFont");
-        this.$primaryAppColor = localStorage.getItem("myToDoPrimaryColor") || window.getComputedStyle(document.body).getPropertyValue("--primary-color");
+        this.$choosedFont = o_ToDoStorage.get("myToDoChoosedFont");
+        this.$primaryAppColor = o_ToDoStorage.get("myToDoPrimaryColor") || window.getComputedStyle(document.body).getPropertyValue("--primary-color");
         document.documentElement.style.setProperty('--app-font-family', this.$choosedFont);
         document.documentElement.style.setProperty('--primary-color',this.$primaryAppColor);
         // ==========================
@@ -157,7 +158,7 @@ export class o_ToDoList {
                     Action: function() {
                         this.$primaryAppColor = this.value;
                         document.documentElement.style.setProperty('--primary-color', this.value);
-                        localStorage.setItem("myToDoPrimaryColor", this.value);
+                        o_ToDoStorage.set("myToDoPrimaryColor", this.value);
                     }
                 },
                 // --- wybór czcionki ---
@@ -174,7 +175,7 @@ export class o_ToDoList {
                     Action: function (){
                         this.$choosedFont = this.value;
                         document.documentElement.style.setProperty('--app-font-family', this.value);
-                        localStorage.setItem("myToDoChoosedFont", this.value);
+                        o_ToDoStorage.set("myToDoChoosedFont", this.value);
                     }
                 }
             ]
@@ -247,13 +248,12 @@ export class o_ToDoList {
     }
 
     #m_loadTasks() {
-        const savedTasks = localStorage.getItem("myToDoTasks");
-        if(savedTasks) return JSON.parse(savedTasks);
-        return [];
+        const savedTasks = o_ToDoStorage.get("myToDoTasks");
+        return Array.isArray(savedTasks) ? savedTasks : [];
     }
 
     #m_saveTasks() {
-        localStorage.setItem("myToDoTasks", JSON.stringify(this.$tasks));
+        o_ToDoStorage.set("myToDoTasks", this.$tasks);
     }
 
     #m_applyFilters() {
