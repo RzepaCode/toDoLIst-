@@ -93,7 +93,7 @@ export class o_ToDoList {
                 this.$tasks = this.$tasks.filter(task => !idsToDelete.includes(task.id));
 
                 // Czyścimy obiekt stanów (bo te zadania już nie istnieją)
-                idsToDelete.forEach(id => delete this.$checkedState[id]);
+                this.$checkedState = {};
 
                 this.#m_saveTasks();
                 this.#m_applyFilters();
