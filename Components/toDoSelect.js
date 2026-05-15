@@ -30,7 +30,6 @@ export class o_toDoSelect {
             const labelElement = document.createElement("label");
             labelElement.innerHTML = label;
 
-            idName && (labelElement.setAttribute("for", idName));
             this.#element.appendChild(labelElement);
         }
 

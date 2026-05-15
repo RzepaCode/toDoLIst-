@@ -30,7 +30,6 @@ export class o_toDoTask {
         t.#element.classList.add("taskContainer");
         t.#element.style.display = "flex";
 
-
         // Checkbox
         const $taskCheckSection = document.createElement("div");
         $taskCheckSection.classList.add("taskCheckSection");
